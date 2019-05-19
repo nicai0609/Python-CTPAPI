@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import thosttraderapi as api
-import time
 
+#Addr
+#FrontAddr="tcp://180.168.146.187:10000"
+FrontAddr="tcp://180.168.146.187:10030"
 #LoginInfo
 BROKERID="9999"
 USERID="070624"
-PASSWORD="jing12"
+PASSWORD="123456"
 #OrderInfo
 INSTRUMENTID="rb1909"
 PRICE=3200
@@ -50,7 +52,6 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 		
 	def OnFrontConnected(self):
 		print ("OnFrontConnected")
-		#time.sleep( 60 )
 		loginfield = api.CThostFtdcReqUserLoginField()
 		loginfield.BrokerID=BROKERID
 		loginfield.UserID=USERID
@@ -63,6 +64,7 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 		rsploginfield=args[0]
 		rspinfofield=args[1]
 		msg=args[2]
+		print ("TradingDay=",rsploginfield.TradingDay)
 		print ("SessionID=",rsploginfield.SessionID)
 		print ("ErrorID=",rspinfofield.ErrorID)
 		print ("ErrorMsg=",rspinfofield.ErrorMsg)
@@ -70,14 +72,29 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 		qryinfofield = api.CThostFtdcQrySettlementInfoField()
 		qryinfofield.BrokerID=BROKERID
 		qryinfofield.InvestorID=USERID
+		qryinfofield.TradingDay=rsploginfield.TradingDay
 		self.tapi.ReqQrySettlementInfo(qryinfofield,0)
 		print ("send ReqQrySettlementInfo ok")
-		ReqorderfieldInsert(self.tapi)
+		
 
 	def OnRspQrySettlementInfo(self, *args):
 		print ("OnRspQrySettlementInfo")
 		pSettlementInfo=args[0]
-		print ("content:",pSettlementInfo.Content)
+		if  pSettlementInfo is not None :
+			print ("content:",pSettlementInfo.Content)
+		pSettlementInfoConfirm=api.CThostFtdcSettlementInfoConfirmField()
+		pSettlementInfoConfirm.BrokerID=BROKERID
+		pSettlementInfoConfirm.InvestorID=USERID
+		self.tapi.ReqSettlementInfoConfirm(pSettlementInfoConfirm,0)
+		print ("send ReqSettlementInfoConfirm ok")
+		
+	def OnRspSettlementInfoConfirm(self, *args):
+		print ("OnRspSettlementInfoConfirm")
+		rspinfofield=args[1]
+		print ("ErrorID=",rspinfofield.ErrorID)
+		print ("ErrorMsg=",rspinfofield.ErrorMsg)
+		ReqorderfieldInsert(self.tapi)
+		print ("send ReqorderfieldInsert ok")
 
 
 	def OnRtnOrder(self, *args):
@@ -96,11 +113,10 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 def main():
 	tradeapi=api.CThostFtdcTraderApi_CreateFtdcTraderApi()
 	tradespi=CTradeSpi(tradeapi)
-	tradeapi.RegisterFront("tcp://180.168.146.187:10000")
-	#tradeapi.RegisterFront("tcp://180.168.146.187:10030")
+	tradeapi.RegisterFront(FrontAddr)
 	tradeapi.RegisterSpi(tradespi)
-	tradeapi.SubscribePrivateTopic(api.THOST_TERT_RESUME)
-	tradeapi.SubscribePublicTopic(api.THOST_TERT_RESUME)
+	tradeapi.SubscribePrivateTopic(api.THOST_TERT_QUICK)
+	tradeapi.SubscribePublicTopic(api.THOST_TERT_QUICK)
 	tradeapi.Init()
 	tradeapi.Join()
 	
