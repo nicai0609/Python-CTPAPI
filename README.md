@@ -1,5 +1,6 @@
 # 一、简介
-Python版本API基于Python版本win64 3.7.2，是用swig方法在官方C++ API上编译得到，完全开源，有兴趣自己编译的读者可以参考笔者https://blog.csdn.net/pjjing/article/details/77338423这篇博客。此方法编译得到的API在数据结构，函数名及用法上与C++版API完全一致，十分容易上手。调试请下载相同版本Python。
+Python版本API基于Python版本win64 3.7.2，是用swig方法在官方C++ API上编译得到，完全开源，有兴趣自己编译的读者可以参考笔者[
+CTP Python API及Demo（利用Swig 封装）Windows版（traderapi）](https://blog.csdn.net/pjjing/article/details/77338423)这篇博客。此方法编译得到的API在数据结构，函数名及用法上与C++版API完全一致，十分容易上手。调试请下载相同版本Python。
 
 # 二、请求函数及数据结构
 可以参见上期技术官网下载文档，所有函数名及数据结构都是一致的。
