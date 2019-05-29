@@ -2,12 +2,12 @@
 import thosttraderapi as api
 
 #Addr
-#FrontAddr="tcp://180.168.146.187:10000"
-FrontAddr="tcp://180.168.146.187:10030"
+FrontAddr="tcp://180.168.146.187:10000"
+#FrontAddr="tcp://180.168.146.187:10030"
 #LoginInfo
 BROKERID="9999"
 USERID="070624"
-PASSWORD="123456"
+PASSWORD="070624"
 #OrderInfo
 INSTRUMENTID="rb1909"
 PRICE=3200
@@ -50,7 +50,7 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 		api.CThostFtdcTraderSpi.__init__(self)
 		self.tapi=tapi
 		
-	def OnFrontConnected(self):
+	def OnFrontConnected(self) -> "void":
 		print ("OnFrontConnected")
 		loginfield = api.CThostFtdcReqUserLoginField()
 		loginfield.BrokerID=BROKERID
@@ -59,56 +59,51 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 		loginfield.UserProductInfo="python dll"
 		self.tapi.ReqUserLogin(loginfield,0)
 		print ("send login ok")
-	def OnRspUserLogin(self, *args):
+	def OnRspUserLogin(self, pRspUserLogin: 'CThostFtdcRspUserLoginField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
 		print ("OnRspUserLogin")
-		rsploginfield=args[0]
-		rspinfofield=args[1]
-		msg=args[2]
-		print ("TradingDay=",rsploginfield.TradingDay)
-		print ("SessionID=",rsploginfield.SessionID)
-		print ("ErrorID=",rspinfofield.ErrorID)
-		print ("ErrorMsg=",rspinfofield.ErrorMsg)
+		print ("TradingDay=",pRspUserLogin.TradingDay)
+		print ("SessionID=",pRspUserLogin.SessionID)
+		print ("ErrorID=",pRspInfo.ErrorID)
+		print ("ErrorMsg=",pRspInfo.ErrorMsg)
 
 		qryinfofield = api.CThostFtdcQrySettlementInfoField()
 		qryinfofield.BrokerID=BROKERID
 		qryinfofield.InvestorID=USERID
-		qryinfofield.TradingDay=rsploginfield.TradingDay
+		qryinfofield.TradingDay=pRspUserLogin.TradingDay
 		self.tapi.ReqQrySettlementInfo(qryinfofield,0)
 		print ("send ReqQrySettlementInfo ok")
 		
 
-	def OnRspQrySettlementInfo(self, *args):
+	def OnRspQrySettlementInfo(self, pSettlementInfo: 'CThostFtdcSettlementInfoField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
 		print ("OnRspQrySettlementInfo")
-		pSettlementInfo=args[0]
 		if  pSettlementInfo is not None :
 			print ("content:",pSettlementInfo.Content)
+		else :
+			print ("content null")
 		pSettlementInfoConfirm=api.CThostFtdcSettlementInfoConfirmField()
 		pSettlementInfoConfirm.BrokerID=BROKERID
 		pSettlementInfoConfirm.InvestorID=USERID
 		self.tapi.ReqSettlementInfoConfirm(pSettlementInfoConfirm,0)
 		print ("send ReqSettlementInfoConfirm ok")
 		
-	def OnRspSettlementInfoConfirm(self, *args):
+	def OnRspSettlementInfoConfirm(self, pSettlementInfoConfirm: 'CThostFtdcSettlementInfoConfirmField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
 		print ("OnRspSettlementInfoConfirm")
-		rspinfofield=args[1]
-		print ("ErrorID=",rspinfofield.ErrorID)
-		print ("ErrorMsg=",rspinfofield.ErrorMsg)
+		print ("ErrorID=",pRspInfo.ErrorID)
+		print ("ErrorMsg=",pRspInfo.ErrorMsg)
 		ReqorderfieldInsert(self.tapi)
 		print ("send ReqorderfieldInsert ok")
 
 
-	def OnRtnOrder(self, *args):
+	def OnRtnOrder(self, pOrder: 'CThostFtdcOrderField') -> "void":
 		print ("OnRtnOrder")
-		rtnfield=args[0]
-		print ("OrderStatus=",rtnfield.OrderStatus)
-		print ("StatusMsg=",rtnfield.StatusMsg)
-		print ("LimitPrice=",rtnfield.LimitPrice)
+		print ("OrderStatus=",pOrder.OrderStatus)
+		print ("StatusMsg=",pOrder.StatusMsg)
+		print ("LimitPrice=",pOrder.LimitPrice)
 		
-	def OnRspOrderInsert(self, *args):
+	def OnRspOrderInsert(self, pInputOrder: 'CThostFtdcInputOrderField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
 		print ("OnRspOrderInsert")
-		rspinfofield=args[1]
-		print ("ErrorID=",rspinfofield.ErrorID)
-		print ("ErrorMsg=",rspinfofield.ErrorMsg)
+		print ("ErrorID=",pRspInfo.ErrorID)
+		print ("ErrorMsg=",pRspInfo.ErrorMsg)
 		
 def main():
 	tradeapi=api.CThostFtdcTraderApi_CreateFtdcTraderApi()

@@ -6,7 +6,7 @@ class CFtdcMdSpi(mdapi.CThostFtdcMdSpi):
     def __init__(self,tapi):
         mdapi.CThostFtdcMdSpi.__init__(self)
         self.tapi=tapi
-    def OnFrontConnected(self):
+    def OnFrontConnected(self) -> "void":
         print ("OnFrontConnected")
         loginfield = mdapi.CThostFtdcReqUserLoginField()
         loginfield.BrokerID="8000"
@@ -14,28 +14,23 @@ class CFtdcMdSpi(mdapi.CThostFtdcMdSpi):
         loginfield.Password="123456"
         loginfield.UserProductInfo="python dll"
         self.tapi.ReqUserLogin(loginfield,0)
-    def OnRspUserLogin(self, *args):
+    def OnRspUserLogin(self, pRspUserLogin: 'CThostFtdcRspUserLoginField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
         print ("OnRspUserLogin")
-        rsploginfield=args[0]
-        rspinfofield=args[1]
-        print ("SessionID=",rsploginfield.SessionID)
-        print ("ErrorID=",rspinfofield.ErrorID)
-        print ("ErrorMsg=",rspinfofield.ErrorMsg)
-        ret=self.tapi.SubscribeMarketData([b"ru1909",b"rb1909"],2)
+        print ("SessionID=",pRspUserLogin.SessionID)
+        print ("ErrorID=",pRspInfo.ErrorID)
+        print ("ErrorMsg=",pRspInfo.ErrorMsg)
+        ret=self.tapi.SubscribeMarketData([b"ru1909",b"rb1909",b"au1912",b"ag1912"],4)
 
-    def OnRtnDepthMarketData(self, *args):
+    def OnRtnDepthMarketData(self, pDepthMarketData: 'CThostFtdcDepthMarketDataField') -> "void":
         print ("OnRtnDepthMarketData")
-        field=args[0]
-        print ("InstrumentID=",field.InstrumentID)
-        print ("LastPrice=",field.LastPrice)
+        print ("InstrumentID=",pDepthMarketData.InstrumentID)
+        print ("LastPrice=",pDepthMarketData.LastPrice)
 
-    def OnRspSubMarketData(self, *args):
+    def OnRspSubMarketData(self, pSpecificInstrument: 'CThostFtdcSpecificInstrumentField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
         print ("OnRspSubMarketData")
-        field=args[0]
-        print ("InstrumentID=",field.InstrumentID)
-        rspinfofield=args[1]
-        print ("ErrorID=",rspinfofield.ErrorID)
-        print ("ErrorMsg=",rspinfofield.ErrorMsg)
+        print ("InstrumentID=",pSpecificInstrument.InstrumentID)
+        print ("ErrorID=",pRspInfo.ErrorID)
+        print ("ErrorMsg=",pRspInfo.ErrorMsg)
 
 def main():
     mduserapi=mdapi.CThostFtdcMdApi_CreateFtdcMdApi()
