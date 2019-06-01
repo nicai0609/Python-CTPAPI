@@ -3,7 +3,7 @@ Python版本API基于Python版本win64 3.7.2，是用swig方法在官方C++ API�
 CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://blog.csdn.net/pjjing/article/details/77338423)这篇博客。此方法编译得到的API在数据结构，函数名及用法上与C++版API完全一致，十分容易上手。调试请下载**3.7.2及以上版本**Python。
 
 # 二、文件清单
-- win64版
+- win64
 ```
 thosttraderapi.py  //交易头文件
 _thosttraderapi.pyd  //交易库转换文件
@@ -11,6 +11,15 @@ thosttraderapi.dll  //交易官方动态库，穿透式版为thosttraderapi_se.d
 thostmduserapi.py  //行情头文件
 _thostmduserapi.pyd  //行情库转换文件
 thostmduserapi.dll  //行情官方动态库，穿透式版为thostmduserapi_se.dll
+```
+- linux
+```
+thosttraderapi.py  //交易头文件,与win64平台相同
+_thosttraderapi.so  //交易库转换文件
+libthosttraderapi.so //交易官方动态库，穿透式版为thosttraderapi_se.so
+thostmduserapi.py //行情头文件,与win64平台相同
+_thostmduserapi.so //行情库转换文件
+libthostmduserapi.so //行情官方动态库，穿透式版为thostmduserapi_se.so
 ```
 - demo
 ```
@@ -75,9 +84,9 @@ def OnRspUserLogin(self, pRspUserLogin: 'CThostFtdcRspUserLoginField', pRspInfo:
 所有的函数名均可以在头文件底部```class CThostFtdcTraderSpi```和```class CThostFtdcMdSpi```中查到，函数名中自带了参数类型，参数结构直接在头文件中搜索就可以。
 
 # 五、Demo及其用法
-以Trade API为例，Python版CTP API有三个文件，thosttraderapi.py，_thosttraderapi.pyd及thosttraderapi.dll。其中第一个相当于头文件，第二个为包装动态库，第三个是CTP官方库。将td_demo.py文件直接拷贝到这三个文件的同一文件夹中，在命令行运行Python td_demo.py即可直接运行。  
-td_demo.py实现了简单的登录，查询结算单，确认结算单并买开一手rb1909合约的功能。注意，要讲td_demo.py顶部的几个参数改为你自己测试环境参数。  
-md_demo.py实现了订阅ru1909和rb1909两个合约的功能，可以修改SubscribeMarketData的参数订阅别的合约，同时也要注意修改底部的行情前置地址。
+将td_demo.py和md_demo.py文件直接拷贝到API库同一文件夹中，切换到该目录运行Python td_demo.py即可直接运行。
+- td_demo.py实现了简单的登录，查询结算单，确认结算单并买开一手rb1909合约的功能。注意，要将td_demo.py顶部的几个参数改为你自己测试环境参数。  
+- md_demo.py实现了订阅ru1909,rb1909,au1912,ag1912这4个合约的功能，可以修改SubscribeMarketData的参数订阅别的合约，同时也要注意修改底部的行情前置地址。
 
 # 六、常见问题
 ## 1.出错直接退出
@@ -86,7 +95,7 @@ md_demo.py实现了订阅ru1909和rb1909两个合约的功能，可以修改Subs
 def OnRspQrySettlementInfo(self, pSettlementInfo: 'CThostFtdcSettlementInfoField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
     print ("content:",pSettlementInfo.Content)
 ```
-这时如果查到结算单自然没有问题，如果查回结算单为空则直接出错退出，因为args[0]是None类型。所以正确写法应该先判断是否为空，写成如下：
+这时如果查到结算单自然没有问题，如果查回结算单为空则直接出错退出，因为pSettlementInfo是None类型。所以正确写法应该先判断是否为空，写成如下：
 ```
 def OnRspQrySettlementInfo(self, pSettlementInfo: 'CThostFtdcSettlementInfoField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
     if  pSettlementInfo is not None :
