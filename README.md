@@ -1,6 +1,6 @@
 # 一、简介
-Python版本API基于Python版本win64 3.7.2，是用swig方法在官方C++ API上编译得到，完全开源，有兴趣自己编译的读者可以参考笔者[
-CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://blog.csdn.net/pjjing/article/details/77338423)这篇博客。此方法编译得到的API在数据结构，函数名及用法上与C++版API完全一致，十分容易上手。调试请下载**3.7.2及以上版本**Python。
+Python版本API基于Python 3.7.2版本，使用请务必使用此版本及以上版本。该API是用swig方法在官方C++ API上编译得到，完全开源，有兴趣自己编译的读者windows64版可以参考笔者[
+CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://blog.csdn.net/pjjing/article/details/77338423)这篇博客，Linux版只需要参考笔者其他博客，更改下makefile即可。此方法编译得到的API在数据结构，参数名，函数名及用法上与C++版API完全一致，十分容易上手。
 
 # 二、文件清单
 - win64
@@ -60,7 +60,7 @@ loginfield.UserID="00001"
 loginfield.Password="123456"
 tradeapi.ReqUserLogin(loginfield,0)
 ```
-所有的函数名均可以在头文件底部```class CThostFtdcTraderApi```和```class CThostFtdcMdApi```中查到，函数名中自带了参数类型，参数结构直接在头文件中搜索就可以。至于对应的函数怎么用，请参考附带官方文档。以登录为例，找到文档中
+所有的函数名均可以在相应头文件底部```class CThostFtdcTraderApi```和```class CThostFtdcMdApi```中查到，函数声明中自带了参数类型，参数结构直接在头文件中搜索就可以。至于对应的函数怎么用，请参考附带官方文档。以登录为例，找到文档中
 ```
 /6.3.15_API接口说明/交易接口/CThostFtdcTraderApi/ReqUserLogin
 ```
@@ -84,7 +84,7 @@ def OnRspUserLogin(self, pRspUserLogin: 'CThostFtdcRspUserLoginField', pRspInfo:
 所有的函数名均可以在头文件底部```class CThostFtdcTraderSpi```和```class CThostFtdcMdSpi```中查到，函数名中自带了参数类型，参数结构直接在头文件中搜索就可以。
 
 # 五、Demo及其用法
-将td_demo.py和md_demo.py文件直接拷贝到API库同一文件夹中，切换到该目录运行Python td_demo.py即可直接运行。
+将td_demo.py文件直接拷贝到API库交易相关文件(3个)同一文件夹中，切换到该目录运行Python td_demo.py即可直接运行。md_demo.py用法相同。
 - td_demo.py实现了简单的登录，查询结算单，确认结算单并买开一手rb1909合约的功能。注意，要将td_demo.py顶部的几个参数改为你自己测试环境参数。  
 - md_demo.py实现了订阅ru1909,rb1909,au1912,ag1912这4个合约的功能，可以修改SubscribeMarketData的参数订阅别的合约，同时也要注意修改底部的行情前置地址。
 
