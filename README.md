@@ -1,5 +1,5 @@
 # 一、简介
-Python版本API基于Python 3.7.2版本，使用请务必使用此版本及以上版本。该API是用swig方法在官方C++ API上编译得到，完全开源，有兴趣自己编译的读者windows64版可以参考笔者[
+此CTP Python API基于Python 3.7.2版本，使用时请务必安装此版本及以上版本。该API是用swig方法在官方C++ API上编译得到，完全开源，有兴趣自己编译的读者windows64版可以参考笔者[
 CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://blog.csdn.net/pjjing/article/details/77338423)这篇博客，Linux版只需要参考笔者其他博客，更改下makefile即可。此方法编译得到的API在数据结构，参数名，函数名及用法上与C++版API完全一致，十分容易上手。
 
 # 二、文件清单
@@ -95,7 +95,7 @@ def OnRspUserLogin(self, pRspUserLogin: 'CThostFtdcRspUserLoginField', pRspInfo:
 def OnRspQrySettlementInfo(self, pSettlementInfo: 'CThostFtdcSettlementInfoField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
     print ("content:",pSettlementInfo.Content)
 ```
-这时如果查到结算单自然没有问题，如果查回结算单为空则直接出错退出，因为pSettlementInfo是None类型。所以正确写法应该先判断是否为空，写成如下：
+这时如果查到结算单自然没有问题，但如果查回结算单为空则直接出错退出，因为pSettlementInfo是None类型。所以正确写法应该先判断是否为空，写成如下：
 ```
 def OnRspQrySettlementInfo(self, pSettlementInfo: 'CThostFtdcSettlementInfoField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
     if  pSettlementInfo is not None :
