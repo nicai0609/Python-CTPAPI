@@ -59,6 +59,7 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 		loginfield.UserProductInfo="python dll"
 		self.tapi.ReqUserLogin(loginfield,0)
 		print ("send login ok")
+		
 	def OnRspUserLogin(self, pRspUserLogin: 'CThostFtdcRspUserLoginField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
 		print ("OnRspUserLogin")
 		print ("TradingDay=",pRspUserLogin.TradingDay)
@@ -80,11 +81,12 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 			print ("content:",pSettlementInfo.Content)
 		else :
 			print ("content null")
-		pSettlementInfoConfirm=api.CThostFtdcSettlementInfoConfirmField()
-		pSettlementInfoConfirm.BrokerID=BROKERID
-		pSettlementInfoConfirm.InvestorID=USERID
-		self.tapi.ReqSettlementInfoConfirm(pSettlementInfoConfirm,0)
-		print ("send ReqSettlementInfoConfirm ok")
+		if bIsLast :
+			pSettlementInfoConfirm=api.CThostFtdcSettlementInfoConfirmField()
+			pSettlementInfoConfirm.BrokerID=BROKERID
+			pSettlementInfoConfirm.InvestorID=USERID
+			self.tapi.ReqSettlementInfoConfirm(pSettlementInfoConfirm,0)
+			print ("send ReqSettlementInfoConfirm ok")
 		
 	def OnRspSettlementInfoConfirm(self, pSettlementInfoConfirm: 'CThostFtdcSettlementInfoConfirmField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
 		print ("OnRspSettlementInfoConfirm")
@@ -108,10 +110,10 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 def main():
 	tradeapi=api.CThostFtdcTraderApi_CreateFtdcTraderApi()
 	tradespi=CTradeSpi(tradeapi)
-	tradeapi.RegisterFront(FrontAddr)
 	tradeapi.RegisterSpi(tradespi)
 	tradeapi.SubscribePrivateTopic(api.THOST_TERT_QUICK)
 	tradeapi.SubscribePublicTopic(api.THOST_TERT_QUICK)
+	tradeapi.RegisterFront(FrontAddr)	
 	tradeapi.Init()
 	tradeapi.Join()
 	
