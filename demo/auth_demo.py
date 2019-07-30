@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 import thosttraderapi as api
 '''
-登录及报单demo，用于6.3.11及以下版本API
+穿透式版本认证及报单demo，用于6.3.13及以上版本API
 '''
 #Addr
-FrontAddr="tcp://180.168.146.187:10000"
-#FrontAddr="tcp://180.168.146.187:10030"
+FrontAddr="tcp://180.168.146.187:10101"
 #LoginInfo
 BROKERID="9999"
 USERID="070624"
@@ -40,7 +39,7 @@ def ReqorderfieldInsert(tradeapi):
 	orderfield.CombHedgeFlag="1"
 	orderfield.CombOffsetFlag=OFFSET
 	orderfield.GTDDate=""
-	orderfield.OrderRef="1"
+	orderfield.orderfieldRef="1"
 	orderfield.MinVolume = 0
 	orderfield.ForceCloseReason = api.THOST_FTDC_FCC_NotForceClose
 	orderfield.IsAutoSuspend = 0
@@ -56,13 +55,29 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 		
 	def OnFrontConnected(self) -> "void":
 		print ("OnFrontConnected")
-		loginfield = api.CThostFtdcReqUserLoginField()
-		loginfield.BrokerID=BROKERID
-		loginfield.UserID=USERID
-		loginfield.Password=PASSWORD
-		loginfield.UserProductInfo="python dll"
-		self.tapi.ReqUserLogin(loginfield,0)
-		print ("send login ok")
+		authfield = api.CThostFtdcReqAuthenticateField();
+		authfield.BrokerID=BROKERID
+		authfield.UserID=USERID
+		authfield.AppID="simnow_client_test"
+		authfield.AuthCode="0000000000000000"
+		self.tapi.ReqAuthenticate(authfield,0)
+		print ("send ReqAuthenticate ok")
+		
+	def OnRspAuthenticate(self, pRspAuthenticateField: 'CThostFtdcRspAuthenticateField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":	
+		print ("BrokerID=",pRspAuthenticateField.BrokerID)
+		print ("UserID=",pRspAuthenticateField.UserID)
+		print ("AppID=",pRspAuthenticateField.AppID)
+		print ("AppType=",pRspAuthenticateField.AppType)		
+		print ("ErrorID=",pRspInfo.ErrorID)
+		print ("ErrorMsg=",pRspInfo.ErrorMsg)
+		if not pRspInfo.ErrorID :
+			loginfield = api.CThostFtdcReqUserLoginField()
+			loginfield.BrokerID=BROKERID
+			loginfield.UserID=USERID
+			loginfield.Password=PASSWORD
+			loginfield.UserProductInfo="python dll"
+			self.tapi.ReqUserLogin(loginfield,0)
+			print ("send login ok")
 		
 	def OnRspUserLogin(self, pRspUserLogin: 'CThostFtdcRspUserLoginField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
 		print ("OnRspUserLogin")
@@ -85,12 +100,11 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 			print ("content:",pSettlementInfo.Content)
 		else :
 			print ("content null")
-		if bIsLast :
-			pSettlementInfoConfirm=api.CThostFtdcSettlementInfoConfirmField()
-			pSettlementInfoConfirm.BrokerID=BROKERID
-			pSettlementInfoConfirm.InvestorID=USERID
-			self.tapi.ReqSettlementInfoConfirm(pSettlementInfoConfirm,0)
-			print ("send ReqSettlementInfoConfirm ok")
+		pSettlementInfoConfirm=api.CThostFtdcSettlementInfoConfirmField()
+		pSettlementInfoConfirm.BrokerID=BROKERID
+		pSettlementInfoConfirm.InvestorID=USERID
+		self.tapi.ReqSettlementInfoConfirm(pSettlementInfoConfirm,0)
+		print ("send ReqSettlementInfoConfirm ok")
 		
 	def OnRspSettlementInfoConfirm(self, pSettlementInfoConfirm: 'CThostFtdcSettlementInfoConfirmField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
 		print ("OnRspSettlementInfoConfirm")
@@ -114,10 +128,10 @@ class CTradeSpi(api.CThostFtdcTraderSpi):
 def main():
 	tradeapi=api.CThostFtdcTraderApi_CreateFtdcTraderApi()
 	tradespi=CTradeSpi(tradeapi)
+	tradeapi.RegisterFront(FrontAddr)
 	tradeapi.RegisterSpi(tradespi)
 	tradeapi.SubscribePrivateTopic(api.THOST_TERT_QUICK)
 	tradeapi.SubscribePublicTopic(api.THOST_TERT_QUICK)
-	tradeapi.RegisterFront(FrontAddr)	
 	tradeapi.Init()
 	tradeapi.Join()
 	

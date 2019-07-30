@@ -35,8 +35,9 @@ class CFtdcMdSpi(mdapi.CThostFtdcMdSpi):
 def main():
     mduserapi=mdapi.CThostFtdcMdApi_CreateFtdcMdApi()
     mduserspi=CFtdcMdSpi(mduserapi)
-    mduserapi.RegisterFront("tcp://180.168.146.187:10010")
-    #mduserapi.RegisterFront("tcp://180.168.146.187:10031")
+    mduserapi.RegisterFront("tcp://101.230.209.178:53313")
+    '''以下是7*24小时环境'''
+    #mduserapi.RegisterFront("tcp://180.168.146.187:10131")
     mduserapi.RegisterSpi(mduserspi)
     mduserapi.Init()    
     mduserapi.Join()
