@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 import thosttraderapi as api
 '''
+@author : 景色
+@csdn : https://blog.csdn.net/pjjing
+@QQ群 : 767101469
+@公众号 : QuantRoad2019
+
 穿透式版本认证及报单demo，用于6.3.13及以上版本API
 '''
 #Addr

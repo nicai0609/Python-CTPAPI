@@ -28,7 +28,7 @@ libthostmduserapi.so //行情官方动态库，穿透式版为thostmduserapi_se.
 - 文档
 ```
 README.md //本文档
-6.3.15_API接口说明 //官方文档，也可至http://www.sfit.com.cn/下载
+6.3.15_API接口说明.chm //官方文档，也可至http://www.sfit.com.cn/下载(加了日期便于区别版本)
 ```
 
 
@@ -85,8 +85,10 @@ def OnRspUserLogin(self, pRspUserLogin: 'CThostFtdcRspUserLoginField', pRspInfo:
 
 # 五、Demo及其用法
 将td_demo.py文件直接拷贝到API库交易相关文件(3个)同一文件夹中，切换到该目录运行Python td_demo.py即可直接运行。md_demo.py用法相同。
-- td_demo.py实现了简单的登录，查询结算单，确认结算单并买开一手rb1909合约的功能。注意，要将td_demo.py顶部的几个参数改为你自己测试环境参数。  
-- md_demo.py实现了订阅ru1909,rb1909,au1912,ag1912这4个合约的功能，可以修改SubscribeMarketData的参数订阅别的合约，同时也要注意修改底部的行情前置地址。
+- td_demo.py实现了简单的登录，查询结算单，确认结算单并买开一手rb1909合约的功能。注意，要将td_demo.py顶部的几个参数改为你自己测试环境参数；合约过期的话要换成非过期合约。  
+- md_demo.py实现了订阅"au1912","IC1909","i2001","TA001"这4个合约的功能，并将收取行情存入csv，可以修改subID列表订阅别的合约，同时也要注意修改底部的行情前置地址。
+- td_demo(auth).py实现了加入认证功能后的登录报单等功能，适用于正式生产上。
+- candle_demo.py实现了绘制K线图数据功能
 
 # 六、常见问题
 ## 1.出错直接退出
@@ -102,7 +104,8 @@ def OnRspQrySettlementInfo(self, pSettlementInfo: 'CThostFtdcSettlementInfoField
         print ("content:",pSettlementInfo.Content)
 ```
 
-## 2.待补充
+## 2.API调用init后为啥没有任何反应（demo运行没有任何反应或者没有OnFrontConnected回调）？
+先检查网络链路是否畅通，可以telnet一下CTP前置地址，是否通畅。再检查API版本是否正确，连生产或者simnow现必须是6.3.15版本api。
 
 # 七、微信公众号
 欢迎扫二维码关注或者搜索程序化交易入门(QuantRoad2019)，一起学习程序化交易！  
