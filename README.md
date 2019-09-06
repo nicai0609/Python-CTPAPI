@@ -91,7 +91,12 @@ def OnRspUserLogin(self, pRspUserLogin: 'CThostFtdcRspUserLoginField', pRspInfo:
 - candle_demo.py实现了绘制K线图数据功能
 
 # 六、常见问题
-## 1.出错直接退出
+## 1. 运行时“ImportError: DLL load failed: 找不到指定的模块” 
+
+首先确认运行的python版本，运行`python -V`，确保是**3.7.2**及以上。如果版本没有问题，windows上搜索“微软常用运行库合集64位” 安装，linux上确保so所在目录在环境变量LD_LIBRARY_PATH中。
+
+## 2.出错直接退出
+
 通常都是类型对象为None，却直接使用了该对象的成员变量。以查结算单为例，返回回调中，如果输出结算单内容通常直接写成：
 ```
 def OnRspQrySettlementInfo(self, pSettlementInfo: 'CThostFtdcSettlementInfoField', pRspInfo: 'CThostFtdcRspInfoField', nRequestID: 'int', bIsLast: 'bool') -> "void":
@@ -104,8 +109,8 @@ def OnRspQrySettlementInfo(self, pSettlementInfo: 'CThostFtdcSettlementInfoField
         print ("content:",pSettlementInfo.Content)
 ```
 
-## 2.API调用init后为啥没有任何反应（demo运行没有任何反应或者没有OnFrontConnected回调）？
-先检查网络链路是否畅通，可以telnet一下CTP前置地址，是否通畅。再检查API版本是否正确，连生产或者simnow现必须是6.3.15版本api。
+## 3.API调用init后为啥没有任何反应（demo运行没有任何反应或者没有OnFrontConnected回调）？
+先检查网络链路是否畅通，可以telnet一下CTP前置地址，是否通畅。再检查API版本是否正确，连生产或者simnow现必须是6.3.15版本api，评测请用6.3.13。
 
 # 七、微信公众号
 欢迎扫二维码关注或者搜索程序化交易入门(QuantRoad2019)，一起学习程序化交易！  
