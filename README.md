@@ -1,6 +1,7 @@
 # 一、简介
 此CTP Python API基于Python 3.7.2版本，使用时请务必安装此版本及以上版本。该API是用swig方法在官方C++ API上编译得到，完全开源，有兴趣自己编译的读者windows64版可以参考笔者[
-CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://blog.csdn.net/pjjing/article/details/77338423)这篇博客，Linux版只需要参考笔者其他博客，更改下makefile即可。此方法编译得到的API在数据结构，参数名，函数名及用法上与C++版API完全一致，十分容易上手。
+CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://blog.csdn.net/pjjing/article/details/77338423)这篇博客，Linux版只需要参考笔者其他博客，更改下makefile即可。此方法编译得到的API在数据结构，参数名，函数名及用法上与C++版API完全一致，十分容易上手。  
+**编译维护不易，欢迎star，fork鼓励。**
 
 # 二、文件清单
 - win64
@@ -107,6 +108,9 @@ def OnRspQrySettlementInfo(self, pSettlementInfo: 'CThostFtdcSettlementInfoField
 ## 2.API调用init后为啥没有任何反应（demo运行没有任何反应或者没有OnFrontConnected回调）？
 先检查网络链路是否畅通，可以telnet一下CTP前置地址，是否通畅。再检查API版本是否正确，连生产或者simnow现必须是6.3.15版本api。
 
-# 七、微信公众号
+# 七、欢迎交流
 欢迎扫二维码关注或者搜索程序化交易入门(QuantRoad2019)，一起学习程序化交易！  
 ![image](https://img-blog.csdnimg.cn/20190520205748924.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lpc2h1aWhhbjEyMTI=,size_16,color_FFFFFF,t_70)
+
+QQ交流群（767101469），一起讨论程序化交易！  
+![image](https://img-blog.csdnimg.cn/20191005173130764.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3lpc2h1aWhhbjEyMTI=,size_16,color_FFFFFF,t_70)
