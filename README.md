@@ -1,7 +1,7 @@
 # 一、简介
 此CTP Python API在windows上由于Python3.X系列互不兼容，所以分别编译了Python3.7和Python3.8的版本，windows上使用时请务必安装对应Python版本，linux上无此问题。该API是用swig方法在官方C++ API上编译得到，完全开源，有兴趣自己编译的读者windows64版可以参考笔者[
 CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://blog.csdn.net/pjjing/article/details/77338423)这篇博客，Linux版只需要参考笔者其他博客，更改下makefile即可。此方法编译得到的API在数据结构，参数名，函数名及用法上与C++版API完全一致，十分容易上手。  
-**编译维护不易，欢迎star，fork鼓励。**
+**Github上如果不方便下，请到gitee上下载 https://gitee.com/nicai0609/Python-CTPAPI 或者扫码进入QQ群群文件中下载。编译维护不易，欢迎star，fork鼓励。**
 
 # 二、文件清单
 ```
