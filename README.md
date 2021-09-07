@@ -1,12 +1,14 @@
 # 一、简介
-此CTP Python API在windows上由于Python3.X系列互不兼容，所以分别编译了Python3.7和Python3.8的版本，windows上使用时请务必安装对应Python版本，linux上无此问题。该API是用swig方法在官方C++ API上编译得到，完全开源，有兴趣自己编译的读者windows64版可以参考笔者[
-CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://blog.csdn.net/pjjing/article/details/77338423)这篇博客，Linux版只需要参考笔者其他博客，更改下makefile即可。此方法编译得到的API在数据结构，参数名，函数名及用法上与C++版API完全一致，十分容易上手。  
+此CTP Python API在windows上由于Python3.X系列互不兼容，所以之前的老版本（v6.3.19）分别编译了Python3.7和Python3.8的版本，新版本（v6.6.1）只编译了Python3.8的版本，windows上使用时请务必安装对应Python版本，linux上无此问题。  
+该API是用swig方法在官方C++ API上编译得到，完全开源，有兴趣自己编译的读者windows64版可以参考笔者[
+CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://blog.csdn.net/pjjing/article/details/77338423)这篇博客，Linux版只需要参考笔者其他博客，更改下makefile即可。  
+此方法编译得到的API在数据结构，参数名，函数名及用法上与C++版API完全一致，十分容易上手。  
 **Github上如果不方便下，请到gitee上下载 https://gitee.com/nicai0609/Python-CTPAPI 或者扫码进入QQ群群文件中下载。编译维护不易，欢迎star，fork鼓励。**
 
 # 二、文件清单
 ```
 .
-|-- 6.3.19_API接口说明_20200511.chm //官方文档，也可至http://www.sfit.com.cn/下载(加了日期便于区别版本)
+|-- 6.6.1P1_API接口说明_20210805.chm //官方文档，也可至http://www.sfit.com.cn/下载(加了日期便于区别版本)
 |-- demo  //相关demo，见下面章节详述
 |   |-- calculate_volume_delta.py
 |   |-- candle_demo.py
@@ -26,7 +28,7 @@ CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://bl
 |   `-- win64   //windows下版本，由于Python3.7和Python3.8不兼容，现同时提供两种
 |       |-- py37 //Python3.7版本
 |       |   |-- _thostmduserapi.pyd   //交易库转换文件
-|       |   `-- _thosttraderapi.pyd   //交易库转换文件
+|       |   `-- _thosttraderapi.pyd   //行情库转换文件
 |       |-- py38 //Python3.8版本
 |       |   |-- _thostmduserapi.pyd
 |       |   `-- _thosttraderapi.pyd
@@ -34,7 +36,42 @@ CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://bl
 |       |-- thostmduserapi_se.dll  //行情官方动态库
 |       |-- thosttraderapi.py      //交易头文件
 |       `-- thosttraderapi_se.dll  //交易官方动态库
-`-- v6.3.19_T1_20200423  //CTP评测版本，用于穿透式认证评测，文件内容具体同上说明
+|-- v6.3.19_T1_20200423 //CTP评测版本，用于穿透式认证评测，文件内容具体同上说明
+|   |-- linux
+|   |   |-- libthostmduserapi_se.so
+|   |   |-- libthosttraderapi_se.so
+|   |   |-- thostmduserapi.py
+|   |   |-- _thostmduserapi.so
+|   |   |-- thosttraderapi.py
+|   |   `-- _thosttraderapi.so
+|   `-- win64
+|       |-- py37
+|       |   |-- _thostmduserapi.pyd
+|       |   `-- _thosttraderapi.pyd
+|       |-- py38
+|       |   |-- _thostmduserapi.pyd
+|       |   `-- _thosttraderapi.pyd
+|       |-- thostmduserapi.py
+|       |-- thostmduserapi_se.dll
+|       |-- thosttraderapi.py
+|       `-- thosttraderapi_se.dll
+|-- v6.6.1_P1_20210406 //CTP生产版本，用于正式交易或连simnow，该版本官方新增了一些函数，具体参考chm文档
+|   |-- linux
+|   |   |-- libthostmduserapi_se.so
+|   |   |-- libthosttraderapi_se.so
+|   |   |-- thostmduserapi.py
+|   |   |-- _thostmduserapi.so
+|   |   |-- thosttraderapi.py
+|   |   `-- _thosttraderapi.so
+|   `-- win64
+|       |-- py38
+|       |   |-- _thostmduserapi.pyd
+|       |   `-- _thosttraderapi.pyd
+|       |-- thostmduserapi.py
+|       |-- thostmduserapi_se.dll
+|       |-- thosttraderapi.py
+|       `-- thosttraderapi_se.dll
+`-- v6.6.1_P1_CP_20210406 //CTP评测版本
     |-- linux
     |   |-- libthostmduserapi_se.so
     |   |-- libthosttraderapi_se.so
@@ -43,9 +80,6 @@ CTP Python API及Demo（利用Swig封装）Windows版（traderapi）](https://bl
     |   |-- thosttraderapi.py
     |   `-- _thosttraderapi.so
     `-- win64
-        |-- py37
-        |   |-- _thostmduserapi.pyd
-        |   `-- _thosttraderapi.pyd
         |-- py38
         |   |-- _thostmduserapi.pyd
         |   `-- _thosttraderapi.pyd
@@ -84,7 +118,7 @@ tradeapi.ReqUserLogin(loginfield,0)
 ```
 所有的函数名均可以在相应头文件底部```class CThostFtdcTraderApi```和```class CThostFtdcMdApi```中查到，函数声明中自带了参数类型，参数结构直接在头文件中搜索就可以。至于对应的函数怎么用，请参考附带官方文档。以登录为例，找到文档中
 ```
-/6.3.15_API接口说明/交易接口/CThostFtdcTraderApi/ReqUserLogin
+/6.6.1P1_API接口说明/交易接口/CThostFtdcTraderApi/ReqUserLogin
 ```
 这里面写的非常清楚。
 
@@ -141,7 +175,8 @@ def OnRspQrySettlementInfo(self, pSettlementInfo: 'CThostFtdcSettlementInfoField
 ```
 
 ## 3.API调用init后为啥没有任何反应（demo运行没有任何反应或者没有OnFrontConnected回调）？
-先检查网络链路是否畅通，可以telnet一下CTP前置地址，是否通畅。再检查API版本是否正确，**连生产或者simnow现必须是v6.3.19_P1_20200106版本api，评测请用v6.3.19_T1_20200423**。
+先检查网络链路是否畅通，可以telnet一下CTP前置地址，是否通畅。再检查API版本是否正确，**连生产或者simnow现必须是v6.3.19_P1_20200106或者v6.6.1_P1_20210406版本api，评测请用v6.3.19_T1_20200423或者v6.6.1_P1_CP_20210406**。详细参考如下：
+![image](https://img-blog.csdnimg.cn/20210907225923920.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5pmv6Imy5q2j5aW9,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 ## 4.运行mddemo没有收到行情？
 请参考[CTP程序化交易入门系列之四：行情订阅常见问题解答](https://blog.csdn.net/pjjing/article/details/100532276)这篇博客
